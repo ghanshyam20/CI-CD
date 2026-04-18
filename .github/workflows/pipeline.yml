@@ -34,11 +34,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Start app
-        run: npm run start &
-
-      - name: Wait for app
-        run: sleep 5
+     
 
       
 
