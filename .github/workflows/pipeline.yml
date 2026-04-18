@@ -9,7 +9,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  simple_deployment_pipeline:
+  build_and_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -76,7 +76,7 @@ jobs:
       
   tag_release:
     if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }}
-    needs: [simple_deployment_pipeline]
+    needs: [build_and_test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
