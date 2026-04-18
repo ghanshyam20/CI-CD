@@ -26,3 +26,10 @@ jobs:
 
       - name: Build the app
         run: npm run build
+
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run e2e tests
+        run: npm run test:e2e
