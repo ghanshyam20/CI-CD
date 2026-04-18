@@ -42,6 +42,19 @@ jobs:
         run: npm run test:e2e
 
 
+    
+
+     
+
+    
+
+
+  deploy:
+    needs: [build_and_test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
       - name: Install Flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
 
@@ -51,8 +64,27 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
+      
+  tag_release:
+    if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }}
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.75.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
+
+
+  notify_success:
+    needs: [deploy]
+    if: ${{ success() && github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Discord success notification
-        if: ${{ success() && github.event_name == 'push' }}
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
@@ -60,8 +92,13 @@ jobs:
           title: "Deployment successful"
           description: "Commit: ${{ github.sha }}"
 
+
+  notify_failure:
+    needs: [build_and_test,deploy]
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Discord failure notification
-        if: ${{ failure() }}
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
@@ -72,17 +109,3 @@ jobs:
             Commit: ${{ github.sha }}
             Branch: ${{ github.ref_name }}
             Actor: ${{ github.actor }}
-
-      
-  tag_release:
-    if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }}
-    needs: [build_and_test]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.75.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BUMP: patch
