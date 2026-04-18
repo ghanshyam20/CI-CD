@@ -53,17 +53,27 @@ jobs:
 
       - name: Discord success notification
         if: ${{ success() && github.event_name == 'push' }}
-        uses: Ilshidur/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          DISCORD_MESSAGE: "✅ Deployment successful! Commit: ${{ github.sha }}"
+        uses: sarisia/actions-status-discord@v1
+        with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK }}
+        status: success
+        title: "Deployment successful"
+        description: "Commit: ${{ github.sha }}"
 
       - name: Discord failure notification
         if: ${{ failure() }}
-        uses: Ilshidur/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          DISCORD_MESSAGE: "❌ Build failed!\nCommit: ${{ github.sha }}\nBranch: ${{ github.ref_name }}"
+        uses: sarisia/actions-status-discord@v1
+        with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK }}
+        status: failure
+        title: "Build failed"
+        description: |
+        Repo: ${{ github.repository }}
+        Commit: ${{ github.sha }}
+        Branch: ${{ github.ref_name }}
+        Actor: ${{ github.actor }}
+      
+
       
   tag_release:
     if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }}
