@@ -12,6 +12,6 @@ jobs:
       - name: Check application health
         uses: jtalk/url-health-check-action@v4
         with:
-          url: https://fs-pokedex-main.fly...dev
+          url: https://fs-pokedex-main.fly.dev
           max-attempts: 3
           retry-delay: 5s
