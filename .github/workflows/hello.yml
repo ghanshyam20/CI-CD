@@ -1,15 +1,17 @@
-name: Hello World!
+name: Hello Workflow
 
 on:
   push:
-    branches:
-      - main
 
 jobs:
-  hello_world_job:
+  hello:
     runs-on: ubuntu-latest
     steps:
-      - name: Say hello
-        run: |
-          echo "Hello World!"
+      - name: Print Hello
+        run: echo "Hello World!"
 
+      - name: Print Date
+        run: date
+
+      - name: List Files
+        run: ls -l
