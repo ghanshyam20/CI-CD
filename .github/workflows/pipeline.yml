@@ -55,24 +55,23 @@ jobs:
         if: ${{ success() && github.event_name == 'push' }}
         uses: sarisia/actions-status-discord@v1
         with:
-        webhook: ${{ secrets.DISCORD_WEBHOOK }}
-        status: success
-        title: "Deployment successful"
-        description: "Commit: ${{ github.sha }}"
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: success
+          title: "Deployment successful"
+          description: "Commit: ${{ github.sha }}"
 
       - name: Discord failure notification
         if: ${{ failure() }}
         uses: sarisia/actions-status-discord@v1
         with:
-        webhook: ${{ secrets.DISCORD_WEBHOOK }}
-        status: failure
-        title: "Build failed"
-        description: |
-        Repo: ${{ github.repository }}
-        Commit: ${{ github.sha }}
-        Branch: ${{ github.ref_name }}
-        Actor: ${{ github.actor }}
-      
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: failure
+          title: "Build failed"
+          description: |
+            Repo: ${{ github.repository }}
+            Commit: ${{ github.sha }}
+            Branch: ${{ github.ref_name }}
+            Actor: ${{ github.actor }}
 
       
   tag_release:
